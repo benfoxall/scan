@@ -5,17 +5,9 @@
     <title></title>
     <style media="screen">
       body {margin:0}
-      video, canvas {
-        position: absolute;
-        top:0;
-        left:0;
-      }
-      video{
-        transform: scaleX(-1);
-      }
-      canvas {
-        opacity: 0.9;
-      }
+      video, canvas { position: absolute; top:0; left:0; }
+      video{ transform: scaleX(-1); }
+      canvas { opacity: 0.9; }
     </style>
   </head>
   <body>
@@ -35,53 +27,33 @@
 
     var p = navigator.mediaDevices.getUserMedia({ audio: false, video: true });
 
-p.then(function(mediaStream) {
+    p.then(function(mediaStream) {
 
-video.src = window.URL.createObjectURL(mediaStream);
-video.onloadedmetadata = function(e) {
-  // Do something with the video here.
-  console.log(video.videoHeight)
+      video.src = window.URL.createObjectURL(mediaStream);
+      video.onloadedmetadata = function(e) {
 
-  vh = video.videoHeight
-  vw = video.videoWidth
+        vh = canvas.height = video.videoHeight
+        vw = canvas.width = video.videoWidth
 
-  canvas.height = vh
-  canvas.width = vw
+        video.style.width = canvas.style.width
+          = window.innerWidth + 'px'
 
-  video.style.width = canvas.style.width
-   = window.innerWidth + 'px'
+        function renderer(t){
+            requestAnimationFrame(renderer)
+            var progress = (t/20000) % 1
 
-  // video.style.height = canvas.height + 'px'
-  // video.style.width = canvas.width + 'px'
-
-  // video.style.display = 'none'
-
-
-  function renderer(t){
-      requestAnimationFrame(renderer)
-
-      var progress = (t/20000) % 1
-
-      ctx.drawImage(
-        video,
-
-        (1-progress) * vw,0,
-
-        1,vh,
-
-        progress * canvas.width ,0,
-
-        10, canvas.height
-      )
-  }
-
-  requestAnimationFrame(renderer)
-
-};
-});
-
-p.catch(function(err) { console.log(err.name); }); //
-
+            ctx.drawImage(
+              video,
+              (1-progress) * vw,0,
+              1,vh,
+              progress * canvas.width,0,
+              10, canvas.height
+            )
+        }
+        requestAnimationFrame(renderer)
+      }
+    })
+    .catch(function(err) { console.log(err.name) })
     </script>
   </body>
 </html>
