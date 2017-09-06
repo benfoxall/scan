@@ -5,14 +5,25 @@
     <title></title>
     <style media="screen">
       body {margin:0}
+      video, canvas {
+        position: absolute;
+        top:0;
+        left:0;
+      }
+      video{
+        transform: scaleX(-1);
+      }
+      canvas {
+        opacity: 0.9;
+      }
     </style>
   </head>
   <body>
-    <canvas></canvas>
     <video autoplay="" ></video>
+    <canvas></canvas>
     <script type="text/javascript">
     (function(){var a=function(a,e,f){var b=navigator.getUserMedia||navigator.webkitGetUserMedia||navigator.mozGetUserMedia||navigator.msGetUserMedia;return b?new Promise(function(c,d){b.call(navigator,a,c,d)}):Promise.reject(Error("getUserMedia is not implemented in this browser"))};void 0===navigator.mediaDevices&&(navigator.mediaDevices={});void 0===navigator.mediaDevices.getUserMedia&&(navigator.mediaDevices.getUserMedia=a)})();
-    
+
     var video = document.querySelector('video');
     var canvas = document.querySelector('canvas');
 
@@ -32,15 +43,24 @@ video.onloadedmetadata = function(e) {
   console.log(video.videoHeight)
 
   vh = video.videoHeight
-  vw = video.videoHeight
+  vw = video.videoWidth
 
-  video.style.display = 'none'
+  canvas.height = vh
+  canvas.width = vw
+
+  video.style.width = canvas.style.width
+   = window.innerWidth + 'px'
+
+  // video.style.height = canvas.height + 'px'
+  // video.style.width = canvas.width + 'px'
+
+  // video.style.display = 'none'
 
 
   function renderer(t){
       requestAnimationFrame(renderer)
 
-      var progress = (t/30000) % 1
+      var progress = (t/20000) % 1
 
       ctx.drawImage(
         video,
@@ -51,7 +71,7 @@ video.onloadedmetadata = function(e) {
 
         progress * canvas.width ,0,
 
-        30, canvas.height
+        10, canvas.height
       )
   }
 
